@@ -9,7 +9,7 @@
   "scripts": {
     "start": "concurrently --kill-others \"npm:start-ui\" \"npm:start-holochain\"",
     "start-ui": "CONDUCTOR_URL=ws://localhost:8888 concurrently -k --names tsc,dev-server \"npm run build-watch\" \"web-dev-server --config demo/web-dev-server.config.mjs\"",
-    "start-holochain": "RUST_LOG=warn holochain-run-dna ../zome/todo_rename_zome.dna.gz",
+    "start-holochain": "RUST_LOG=warn holochain-run-dna ../zome/membrane_roles.dna.gz",
     "build": "rimraf dist && tsc",
     "build-watch": "tsc --watch",
     "test": "tsc && web-test-runner --coverage --puppeteer",
@@ -28,6 +28,7 @@
   "dependencies": {
     "@apollo/client": "^3.2.0",
     "@graphql-tools/schema": "^6.2.3",
+    "@holochain-open-dev/profiles": "git://github.com/holochain-open-dev/profiles-module.git#ui-build",
     "@holochain/conductor-api": "0.0.1-dev.10",
     "graphql": "^15.3.0",
     "lit-element": "^2.4.0",

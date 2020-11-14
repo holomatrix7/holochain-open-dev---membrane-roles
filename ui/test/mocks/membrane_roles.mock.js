@@ -1,18 +1,18 @@
-import { randomHash } from 'holochain-ui-test-utils';
+import { randomEntryHash } from 'holochain-ui-test-utils';
 
 // TODO: change the functions of this class to match the functions that your zome has
-export class CalendarEventsMock {
+export class MembraneRolesMock {
   constructor() {
     this.calendarEvents = [];
   }
 
   create_calendar_event(calendarInput) {
-    const newId = randomHash();
+    const newId = randomEntryHash();
     this.calendarEvents.push([
       newId,
       {
         ...calendarInput,
-        created_by: randomHash(),
+        created_by: randomEntryHash(),
       },
     ]);
 

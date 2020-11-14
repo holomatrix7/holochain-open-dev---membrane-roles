@@ -2,39 +2,43 @@ import { gql } from '@apollo/client/core';
 import { expect } from '@open-wc/testing';
 
 import { setupApolloClient } from './mocks/setupApolloClient';
-import { CREATE_CALENDAR_EVENT } from '../dist';
+import { ASSIGN_ROLE } from '../dist';
+import { CREATE_PROFILE } from '@holochain-open-dev/profiles';
 
-// TODO: change mutations and tests to adapt to your graphql queries
 describe('Apollo middleware', () => {
-  it('create a calendar event and retrieve it', async () => {
+  it('assign a role and retrieve it', async () => {
     const client = await setupApolloClient();
 
-    const createCalendarEvent = await client.mutate({
-      mutation: CREATE_CALENDAR_EVENT,
+    const profile = await client.mutate({
+      mutation: CREATE_PROFILE,
       variables: {
-        title: 'Event 1',
-        startTime: Math.floor(Date.now() / 1000),
-        endTime: Math.floor(Date.now() / 1000) + 10,
-        location: null,
-        invitees: [],
+        profile: { username: 'alice' },
+      },
+    });
+
+    await client.mutate({
+      mutation: ASSIGN_ROLE,
+      variables: {
+        roleName: 'editor',
+        agentId: profile.data.createProfile.id,
       },
     });
 
     const result = await client.query({
       query: gql`
         {
-          allCalendarEvents {
-            id
-            title
+          allRoles {
+            name
+            assignees {
+              id
+            }
           }
         }
       `,
     });
 
-    expect(result.data.allCalendarEvents.length).to.equal(1);
-    expect(result.data.allCalendarEvents[0].id).to.equal(
-      createCalendarEvent.data.createCalendarEvent.id
-    );
-    expect(result.data.allCalendarEvents[0].title).to.equal('Event 1');
+    expect(result.data.allRoles.length).to.equal(1);
+    expect(result.data.allRoles[0].name).to.equal('editor');
+    expect(result.data.allRoles[0].assignees.length).to.equal(1);
   });
 });

@@ -1,6 +1,9 @@
 // TODO: change exports to be available for consumer packages
 
-export { calendarEventsTypeDefs } from './graphql/schema';
-export { calendarEventsResolvers } from './graphql/resolvers';
-export { CREATE_CALENDAR_EVENT } from './graphql/queries';
-export { CalendarEventsModule } from './calendar.module';
+export { ASSIGN_ROLE } from './graphql/queries';
+export { membraneRolesTypeDefs } from './graphql/schema';
+export { membraneRolesResolvers } from './graphql/resolvers';
+export {
+  MembraneRolesDependencies,
+  MembraneRolesModule,
+} from './membrane-roles.module';

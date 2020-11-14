@@ -5,63 +5,59 @@ function secondsToTimestamp(secs: number) {
   return [secs, 0];
 }
 
-function hashToString(hash: { hash: Buffer; hash_type: Buffer }) {
-  return hash.hash_type.toString('hex') + hash.hash.toString('hex');
-}
-
-// TODO: define your own resolvers
-
-export const calendarEventsResolvers = (
+export function membraneRolesResolvers(
   appWebsocket: AppWebsocket,
   cellId: CellId,
-  zomeName = 'todo_rename_zome'
-): Resolvers => ({
-  Query: {
-    async allCalendarEvents() {
-      const events = await appWebsocket.callZome({
-        cap: null as any,
-        cell_id: cellId,
-        zome_name: zomeName,
-        fn_name: 'get_all_calendar_events',
-        payload: null,
-        provenance: cellId[1],
-      });
+  zomeName = 'membrane_roles'
+): Resolvers {
+  function callZome(fnName: string, payload: any) {
+    return appWebsocket.callZome({
+      cap: null as any,
+      cell_id: cellId,
+      zome_name: zomeName,
+      fn_name: fnName,
+      payload: payload,
+      provenance: cellId[1],
+    });
+  }
+  return {
+    Agent: {
+      async roles(agent) {
+        const roles = await callZome('get_agent_roles', agent.id);
 
-      return events.map((event: any) => ({
-        id: hashToString(event[0]),
-        ...event[1],
-      }));
+        return roles.map((role: string) => ({ name: role }));
+      },
     },
-  },
-  Mutation: {
-    async createCalendarEvent(
-      _,
-      { title, startTime, endTime, location, invitees }
-    ) {
-      const eventId = await appWebsocket.callZome({
-        cap: null as any,
-        cell_id: cellId,
-        zome_name: zomeName,
-        fn_name: 'create_calendar_event',
-        payload: {
-          title,
-          start_time: secondsToTimestamp(startTime),
-          end_time: secondsToTimestamp(endTime),
-          location,
-          invitees,
-        },
-        provenance: cellId[1],
-      });
+    Role: {
+      async assignees(role) {
+        const agents = await callZome(
+          'get_assigned_agents_for_role',
+          role.name
+        );
 
-      return {
-        id: hashToString(eventId),
-        createdBy: hashToString(cellId[1]),
-        title,
-        startTime,
-        endTime,
-        invitees,
-        location,
-      };
+        return agents.map((agent: string) => ({ id: agent }));
+      },
     },
-  },
-});
+    Query: {
+      async allRoles() {
+        const roles = await callZome('get_all_roles', null);
+
+        return roles.map((role: string) => ({
+          name: role,
+        }));
+      },
+    },
+    Mutation: {
+      async assignRole(_, { roleName, agentId }) {
+        await callZome('assign_role', {
+          role: roleName,
+          agent_pub_key: agentId,
+        });
+
+        return {
+          name: roleName,
+        };
+      },
+    },
+  };
+}

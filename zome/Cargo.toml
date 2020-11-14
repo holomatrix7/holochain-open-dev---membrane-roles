@@ -1,6 +1,7 @@
 [workspace]
 members = [
   "zomes/membrane_roles",
+  "zomes/profiles",
 ]
 
 [profile.dev]
