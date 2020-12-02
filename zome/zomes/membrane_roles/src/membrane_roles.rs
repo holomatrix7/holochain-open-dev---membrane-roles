@@ -27,7 +27,7 @@ pub struct MembraneRoleOutput {
 
 #[derive(Serialize, SerializedBytes, Deserialize, Clone)]
 pub struct CreateMembraneRoleInput {
-    role_name: String,
+    pub role_name: String,
 }
 #[hdk_extern]
 pub fn create_membrane_role(input: CreateMembraneRoleInput) -> ExternResult<MembraneRoleOutput> {

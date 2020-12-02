@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "TRYORAMA_LOG_LEVEL=info RUST_LOG=error RUST_BACKTRACE=1 TRYORAMA_HOLOCHAIN_PATH=\"holochain\" ts-node src/index.ts"
+    "test": "TRYORAMA_LOG_LEVEL=info RUST_LOG=debug RUST_BACKTRACE=1 TRYORAMA_HOLOCHAIN_PATH=\"holochain\" ts-node src/index.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@holochain-open-dev/common": "git+https://github.com/holochain-open-dev/common.git#ui-build",
     "@holochain/tryorama": "0.4.0-dev.1",
     "@types/lodash": "^4.14.158",
     "@types/node": "^14.0.14",
@@ -16,5 +17,8 @@
     "tape": "^5.0.1",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.6"
+  },
+  "devDependencies": {
+    "js-base64": "^3.6.0"
   }
 }

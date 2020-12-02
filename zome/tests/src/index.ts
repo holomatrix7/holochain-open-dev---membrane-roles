@@ -1,20 +1,16 @@
-import {
-  Orchestrator,
-  Config,
-  InstallAgentsHapps,
-  TransportConfigType,
-  Player,
-} from "@holochain/tryorama";
+import { Orchestrator, Config, Player } from "@holochain/tryorama";
 import path from "path";
+import * as msgpack from "@msgpack/msgpack";
+import { Base64 } from "js-base64";
+
+export function serializeHash(hash) {
+  return `u${Base64.fromUint8Array(hash, true)}`;
+}
 
 const conductorConfig = Config.gen();
 
 // Construct proper paths for your DNAs
 const rolesDna = path.join(__dirname, "../../membrane_roles.dna.gz");
-
-// create an InstallAgentsHapps array with your DNAs to tell tryorama what
-// to install into the conductor.
-const installation: InstallAgentsHapps = [[[rolesDna]], [[rolesDna]]];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(() => resolve(), ms));
 
@@ -25,11 +21,27 @@ orchestrator.registerScenario(
   async (s, t) => {
     const [player]: Player[] = await s.players([conductorConfig]);
 
-    // install your happs into the coductors and destructuring the returned happ data using the same
-    // array structure as you created in your installation array.
-    const [[alice_happ], [bob_happ]] = await player.installAgentsHapps(
-      installation
-    );
+    const aliceKey = await player.adminWs().generateAgentPubKey();
+
+    const dnas = [
+      {
+        path: rolesDna,
+        nick: `my_cell_nick`,
+        properties: { progenitors: [serializeHash(aliceKey)] },
+        membrane_proof: undefined,
+      },
+    ];
+
+    const alice_happ = await player._installHapp({
+      installed_app_id: `my_app:12345`, // my_app with some unique installed id value
+      agent_key: aliceKey,
+      dnas,
+    });
+    const bob_happ = await player._installHapp({
+      installed_app_id: `my_app:1234`, // my_app with some unique installed id value
+      agent_key: await player.adminWs().generateAgentPubKey(),
+      dnas,
+    });
 
     const alice_roles = alice_happ.cells[0];
     const bob_roles = bob_happ.cells[0];
@@ -56,8 +68,9 @@ orchestrator.registerScenario(
       "get_all_membrane_roles",
       null
     );
-    t.equal(roles.length, 1);
+    t.equal(roles.length, 2);
     t.equal(roles[0].entry.role_name, "editor");
+    t.equal(roles[1].entry.role_name, "administrator");
 
     let agents = await bob_roles.call(
       "membrane_roles",

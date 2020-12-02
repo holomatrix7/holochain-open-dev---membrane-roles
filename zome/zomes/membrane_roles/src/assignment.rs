@@ -1,5 +1,7 @@
 use crate::{
+    admin::admin_role_hash,
     membrane_roles::{GetRolesOutput, MembraneRole, MembraneRoleOutput},
+    progenitor::get_progenitors,
     utils,
 };
 use hc_utils::{WrappedAgentPubKey, WrappedDnaHash};
@@ -7,9 +9,9 @@ use hdk3::prelude::*;
 
 #[hdk_entry(id = "membrane_role_assigment")]
 pub struct MembraneRoleAssignment {
-    role_name: String,
-    dna_hash: WrappedDnaHash,
-    agent_pub_key: AgentPubKey,
+    pub role_name: String,
+    pub dna_hash: WrappedDnaHash,
+    pub agent_pub_key: AgentPubKey,
 }
 
 /** Roles **/
@@ -55,9 +57,12 @@ pub struct GetAssigneesOutput(Vec<WrappedAgentPubKey>);
 pub fn get_membrane_role_assignees(
     membrane_role_hash: EntryHash,
 ) -> ExternResult<GetAssigneesOutput> {
-    let links = get_links(membrane_role_hash, Some(utils::link_tag("assignee")?))?;
+    let links = get_links(
+        membrane_role_hash.clone(),
+        Some(utils::link_tag("assignee")?),
+    )?;
 
-    let assigned_agents = links
+    let mut assigned_agents = links
         .into_inner()
         .into_iter()
         .map(|link| {
@@ -67,6 +72,11 @@ pub fn get_membrane_role_assignees(
             Ok(WrappedAgentPubKey(assignment.agent_pub_key))
         })
         .collect::<ExternResult<Vec<WrappedAgentPubKey>>>()?;
+
+    // Add progenitors if the queried role is the admin role
+    if membrane_role_hash == admin_role_hash()? {
+        assigned_agents.extend(get_progenitors()?);
+    }
 
     Ok(GetAssigneesOutput(assigned_agents))
 }
