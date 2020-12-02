@@ -1,16 +1,18 @@
 import { Resolvers } from '@apollo/client/core';
-import { AppWebsocket, CellId } from '@holochain/conductor-api';
-
-function secondsToTimestamp(secs: number) {
-  return [secs, 0];
-}
+import { AppWebsocket, InstalledAppId } from '@holochain/conductor-api';
+import { getCellIdForDnaHash } from '@holochain-open-dev/common';
 
 export function membraneRolesResolvers(
   appWebsocket: AppWebsocket,
-  cellId: CellId,
+  installedAppId: InstalledAppId,
   zomeName = 'membrane_roles'
 ): Resolvers {
-  function callZome(fnName: string, payload: any) {
+  async function callZome(membraneId: string, fnName: string, payload: any) {
+    const cellId = await getCellIdForDnaHash(
+      appWebsocket,
+      installedAppId,
+      membraneId
+    );
     return appWebsocket.callZome({
       cap: null as any,
       cell_id: cellId,
@@ -21,26 +23,32 @@ export function membraneRolesResolvers(
     });
   }
   return {
-    Agent: {
-      async roles(agent) {
-        const roles = await callZome('get_agent_roles', agent.id);
+    HolochainAgent: {
+      async membraneRoles(agent, { membraneId }) {
+        const roles = await callZome(membraneId, 'get_agent_roles', agent.id);
 
         return roles.map((role: string) => ({ name: role }));
       },
     },
-    Role: {
-      async assignees(role) {
+    MembraneRole: {
+      async assignees(membraneRole) {
         const agents = await callZome(
+          membraneRole.membrane.id,
           'get_assigned_agents_for_role',
-          role.name
+          membraneRole.id
         );
 
         return agents.map((agent: string) => ({ id: agent }));
       },
+      membrane(membraneRole) {
+        return {
+          id: membraneRole.dna_hash,
+        };
+      },
     },
-    Query: {
-      async allRoles() {
-        const roles = await callZome('get_all_roles', null);
+    RolesMembrane: {
+      async allMembraneRoles(membrane) {
+        const roles = await callZome(membrane.id, 'get_all_roles', null);
 
         return roles.map((role: string) => ({
           name: role,
@@ -48,14 +56,20 @@ export function membraneRolesResolvers(
       },
     },
     Mutation: {
-      async assignRole(_, { roleName, agentId }) {
-        await callZome('assign_role', {
-          role: roleName,
+      async assignMembraneRole(_, { membraneId, membraneRoleId, agentId }) {
+        await callZome(membraneId, 'assign_role', {
+          role: membraneRoleId,
           agent_pub_key: agentId,
         });
 
+        return true;
+      },
+      async createMembraneRole(_, { membraneId, role }) {
+        const membraneRole = await callZome(membraneId, 'create_role', role);
+
         return {
-          name: roleName,
+          id: membraneRole.entry_hash,
+          ...membraneRole.entry,
         };
       },
     },

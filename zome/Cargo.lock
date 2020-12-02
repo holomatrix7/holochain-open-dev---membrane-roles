@@ -76,13 +76,13 @@ checksum = "41cb0e6161ad61ed084a36ba71fbba9e3ac5aee3606fb607fe08da6acbcf3d8c"
 dependencies = [
  "proc-macro2 1.0.24",
  "quote 1.0.7",
- "syn 1.0.48",
+ "syn 1.0.53",
 ]
 
 [[package]]
 name = "fixt"
 version = "0.0.1"
-source = "git+https://github.com/holochain/holochain?rev=7037aa2ccfb1ad9a8ece98eb379686f605dc1a0c#7037aa2ccfb1ad9a8ece98eb379686f605dc1a0c"
+source = "git+https://github.com/holochain/holochain?rev=8fa617e#8fa617e0d4adfa0f1002d3944d2c57bb009667f1"
 dependencies = [
  "holochain_serialized_bytes",
  "lazy_static",
@@ -115,7 +115,7 @@ checksum = "d7afe4a420e3fe79967a00898cc1f4db7c8a49a9333a29f8a4bd76a253d5cd04"
 [[package]]
 name = "hc_utils"
 version = "0.1.0"
-source = "git+https://github.com/guillemcordoba/hc-utils?branch=develop#87eb2ce2823c3ce659d293f82d523061a32caf2e"
+source = "git+https://github.com/holochain/hc-utils?branch=develop#7f65e8f941b9c003133b265d06f3334a9cd60d54"
 dependencies = [
  "hdk3",
  "holo_hash",
@@ -126,12 +126,13 @@ dependencies = [
 [[package]]
 name = "hdk3"
 version = "0.0.1"
-source = "git+https://github.com/holochain/holochain?rev=7037aa2ccfb1ad9a8ece98eb379686f605dc1a0c#7037aa2ccfb1ad9a8ece98eb379686f605dc1a0c"
+source = "git+https://github.com/holochain/holochain?rev=8fa617e#8fa617e0d4adfa0f1002d3944d2c57bb009667f1"
 dependencies = [
  "hdk3_derive",
  "holo_hash",
  "holochain_wasmer_guest",
  "holochain_zome_types",
+ "paste",
  "serde",
  "serde_bytes",
  "thiserror",
@@ -140,13 +141,13 @@ dependencies = [
 [[package]]
 name = "hdk3_derive"
 version = "0.0.1"
-source = "git+https://github.com/holochain/holochain?rev=7037aa2ccfb1ad9a8ece98eb379686f605dc1a0c#7037aa2ccfb1ad9a8ece98eb379686f605dc1a0c"
+source = "git+https://github.com/holochain/holochain?rev=8fa617e#8fa617e0d4adfa0f1002d3944d2c57bb009667f1"
 dependencies = [
  "holochain_zome_types",
  "paste",
  "proc-macro2 1.0.24",
  "quote 1.0.7",
- "syn 1.0.48",
+ "syn 1.0.53",
 ]
 
 [[package]]
@@ -161,7 +162,7 @@ dependencies = [
 [[package]]
 name = "holo_hash"
 version = "0.0.1"
-source = "git+https://github.com/holochain/holochain?rev=7037aa2ccfb1ad9a8ece98eb379686f605dc1a0c#7037aa2ccfb1ad9a8ece98eb379686f605dc1a0c"
+source = "git+https://github.com/holochain/holochain?rev=8fa617e#8fa617e0d4adfa0f1002d3944d2c57bb009667f1"
 dependencies = [
  "base64",
  "blake2b_simd",
@@ -199,9 +200,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_wasmer_common"
-version = "0.0.46"
+version = "0.0.50"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6ee46b8c29e3823cd71f62d6be4f524943f3ee4e8df25f2e758b5feb576636d2"
+checksum = "edfcc07f0ff0aa409a6f7b1fd4766c3c31c6e47a0a7b74563bff5e8791378277"
 dependencies = [
  "holochain_serialized_bytes",
  "serde",
@@ -210,9 +211,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_wasmer_guest"
-version = "0.0.46"
+version = "0.0.50"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d25baad68477da31c444f4c036f8c9da5c129024aa23041e6d3c2fa42c3cdff4"
+checksum = "924a5024a73c73d8835594db1978a4c830ebd51c396920f91a58d7c9ef85641b"
 dependencies = [
  "holochain_serialized_bytes",
  "holochain_wasmer_common",
@@ -222,7 +223,7 @@ dependencies = [
 [[package]]
 name = "holochain_zome_types"
 version = "0.0.1"
-source = "git+https://github.com/holochain/holochain?rev=7037aa2ccfb1ad9a8ece98eb379686f605dc1a0c#7037aa2ccfb1ad9a8ece98eb379686f605dc1a0c"
+source = "git+https://github.com/holochain/holochain?rev=8fa617e#8fa617e0d4adfa0f1002d3944d2c57bb009667f1"
 dependencies = [
  "fixt",
  "holo_hash",
@@ -278,6 +279,7 @@ dependencies = [
  "derive_more",
  "hc_utils",
  "hdk3",
+ "holo_hash",
  "serde",
 ]
 
@@ -316,9 +318,9 @@ dependencies = [
 
 [[package]]
 name = "paste"
-version = "1.0.2"
+version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba7ae1a2180ed02ddfdb5ab70c70d596a26dd642e097bb6fe78b1bde8588ed97"
+checksum = "7151b083b0664ed58ed669fcdd92f01c3d2fdbf10af4931a301474950b52bfa9"
 
 [[package]]
 name = "ppv-lite86"
@@ -347,7 +349,7 @@ dependencies = [
 [[package]]
 name = "profiles"
 version = "0.0.1"
-source = "git+https://github.com/holochain-open-dev/profiles-module?branch=main#74858dc6d796f2cb0f5a978950060af6fae52341"
+source = "git+https://github.com/holochain-open-dev/profiles?branch=main#70a6347a0108d52681efb4fe298baa492818f797"
 dependencies = [
  "derive_more",
  "hc_utils",
@@ -361,7 +363,7 @@ version = "0.0.1"
 dependencies = [
  "derive_more",
  "hdk3",
- "profiles 0.0.1 (git+https://github.com/holochain-open-dev/profiles-module?branch=main)",
+ "profiles 0.0.1 (git+https://github.com/holochain-open-dev/profiles?branch=main)",
  "serde",
 ]
 
@@ -498,7 +500,7 @@ checksum = "128f9e303a5a29922045a830221b8f78ec74a5f544944f3d5984f8ec3895ef64"
 dependencies = [
  "proc-macro2 1.0.24",
  "quote 1.0.7",
- "syn 1.0.48",
+ "syn 1.0.53",
 ]
 
 [[package]]
@@ -515,9 +517,9 @@ dependencies = [
 
 [[package]]
 name = "smallvec"
-version = "1.4.2"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fbee7696b84bbf3d89a1c2eccff0850e3047ed46bfcd2e92c29a2d074d57e252"
+checksum = "7acad6f34eb9e8a259d3283d1e8c1d34d7415943d4895f65cc73813c7396fc85"
 
 [[package]]
 name = "strum"
@@ -534,7 +536,7 @@ dependencies = [
  "heck",
  "proc-macro2 1.0.24",
  "quote 1.0.7",
- "syn 1.0.48",
+ "syn 1.0.53",
 ]
 
 [[package]]
@@ -556,9 +558,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.48"
+version = "1.0.53"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cc371affeffc477f42a221a1e4297aedcea33d47d19b61455588bd9d8f6b19ac"
+checksum = "8833e20724c24de12bbaba5ad230ea61c3eafb05b881c7c9d3cfe8638b187e68"
 dependencies = [
  "proc-macro2 1.0.24",
  "quote 1.0.7",
@@ -582,14 +584,14 @@ checksum = "9ba20f23e85b10754cd195504aebf6a27e2e6cbe28c17778a0c930724628dd56"
 dependencies = [
  "proc-macro2 1.0.24",
  "quote 1.0.7",
- "syn 1.0.48",
+ "syn 1.0.53",
 ]
 
 [[package]]
 name = "unicode-segmentation"
-version = "1.7.0"
+version = "1.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db8716a166f290ff49dabc18b44aa407cb7c6dbe1aa0971b44b8a24b0ca35aae"
+checksum = "bb0d2e7be6ae3a5fa87eed5fb451aff96f2573d2694942e40543ae0bbe19c796"
 
 [[package]]
 name = "unicode-xid"

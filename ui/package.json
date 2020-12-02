@@ -28,7 +28,8 @@
   "dependencies": {
     "@apollo/client": "^3.2.0",
     "@graphql-tools/schema": "^6.2.3",
-    "@holochain-open-dev/profiles": "git://github.com/holochain-open-dev/profiles-module.git#ui-build",
+    "@holochain-open-dev/profiles": "git://github.com/holochain-open-dev/profiles.git#ui-build",
+    "@holochain-open-dev/common": "git://github.com/holochain-open-dev/common.git#ui-build",
     "@holochain/conductor-api": "0.0.1-dev.13",
     "graphql": "^15.3.0",
     "lit-element": "^2.4.0",

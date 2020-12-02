@@ -5,8 +5,6 @@ export const membraneRolesTypeDefs = gql`
     id: ID!
 
     name: String!
-    description: String!
-
     membrane: RolesMembrane!
 
     assignees: [Agent!]!
@@ -15,20 +13,20 @@ export const membraneRolesTypeDefs = gql`
   interface RolesMembrane implements Membrane {
     id: ID!
 
-    allRoles: [MembraneRole!]!
+    allMembraneRoles: [MembraneRole!]!
+    membraneRole(membraneRoleId: ID!): MembraneRole!
   }
 
-  extend type Agent {
-    roles(membraneId: ID!): [Role!]!
+  extend type HolochainAgent {
+    membraneRoles(membraneId: ID!): [MembraneRole!]!
   }
 
-  input RoleParams {
+  input MembraneRoleParams {
     name: String!
-    description: String!
   }
 
   extend type Mutation {
-    createRole(membraneId: ID!, role: RoleParams!): Role!
-    assignRole(membraneId: ID!, roleId: ID!, agentId: ID!): Role!
+    createMembraneRole(membraneId: ID!, membraneRole: MembraneRoleParams!): MembraneRole!
+    assignMembraneRole(membraneId: ID!, roleName: String!, agentId: ID!): Boolean
   }
 `;
