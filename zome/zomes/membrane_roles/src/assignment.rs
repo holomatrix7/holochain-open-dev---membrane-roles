@@ -82,7 +82,7 @@ pub fn get_membrane_role_assignees(
 }
 
 #[hdk_extern]
-pub fn get_agent_membrane_roles(agent_pub_key: WrappedAgentPubKey) -> ExternResult<GetRolesOutput> {
+pub fn get_membrane_roles_for_agent(agent_pub_key: WrappedAgentPubKey) -> ExternResult<GetRolesOutput> {
     let agent_address = utils::pub_key_to_entry_hash(agent_pub_key.0);
 
     let links = get_links(agent_address, Some(utils::link_tag("has_role")?))?;

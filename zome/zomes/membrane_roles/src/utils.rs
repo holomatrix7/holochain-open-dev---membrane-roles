@@ -3,7 +3,7 @@ use hdk3::prelude::*;
 use holo_hash;
 
 pub fn try_get_and_convert<T: TryFrom<SerializedBytes>>(entry_hash: EntryHash) -> ExternResult<T> {
-    match get(entry_hash, GetOptions)? {
+    match get(entry_hash, GetOptions::default())? {
         Some(element) => try_from_element(element),
         None => crate::error("Entry not found"),
     }

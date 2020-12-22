@@ -1,9 +1,8 @@
 use admin::{admin_role, ADMIN_ROLE_NAME};
-use assignment::MembraneRoleAssignment;
-use hc_utils::{WrappedAgentPubKey, WrappedDnaHash};
+use hc_utils::{WrappedAgentPubKey};
 use hdk3::prelude::*;
 use membrane_roles::{create_membrane_role, CreateMembraneRoleInput};
-use progenitor::{am_i_progenitor, is_progenitor};
+use progenitor::{am_i_progenitor};
 
 mod admin;
 mod assignment;
@@ -34,7 +33,7 @@ pub fn init(_: ()) -> ExternResult<InitCallbackResult> {
         let membrane_role = admin_role()?;
         let hash = hash_entry(&membrane_role)?;
 
-        if let None = get(hash.clone(), GetOptions)? {
+        if let None = get(hash.clone(), GetOptions::default())? {
             create_membrane_role(CreateMembraneRoleInput {
                 role_name: ADMIN_ROLE_NAME.into(),
             })?;
@@ -43,7 +42,7 @@ pub fn init(_: ()) -> ExternResult<InitCallbackResult> {
 
     Ok(InitCallbackResult::Pass)
 }
-
+/* 
 #[hdk_extern]
 fn validate(data: ValidateData) -> ExternResult<ValidateCallbackResult> {
     // Only progenitors or admins can modify state in this zome
@@ -72,3 +71,4 @@ fn validate_can_modify_roles(agent_pub_key: AgentPubKey) -> ExternResult<Validat
         Some(_) => Ok(ValidateCallbackResult::Valid),
     }
 }
+ */

@@ -82,7 +82,7 @@ orchestrator.registerScenario(
 
     roles = await bob_roles.call(
       "membrane_roles",
-      "get_agent_membrane_roles",
+      "get_membrane_roles_for_agent",
       aliceAddress
     );
     t.equal(roles.length, 1);

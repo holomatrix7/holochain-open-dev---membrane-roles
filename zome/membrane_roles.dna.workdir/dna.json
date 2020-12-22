@@ -4,7 +4,8 @@
   "properties": null,
   "zomes": {
     "membrane_roles": {
-      "wasm_path": "../target/wasm32-unknown-unknown/release/membrane_roles.wasm"
+      "wasm_path": "../target/wasm32-unknown-unknown/release/membrane_roles.wasm",
+      "ui_path": "../../ui/bundle/bundle.js"
     },
     "profiles": {
       "wasm_path": "../target/wasm32-unknown-unknown/release/profiles.wasm"
