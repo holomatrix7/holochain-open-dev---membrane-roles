@@ -1,17 +1,17 @@
 use crate::utils;
-use hc_utils::WrappedDnaHash;
-use hdk3::prelude::*;
+use holo_hash::DnaHashB64;
+use hdk::prelude::*;
 
 #[hdk_entry(id = "membrane_role")]
 #[derive(Clone)]
 pub struct MembraneRole {
     pub role_name: String,
-    pub dna_hash: WrappedDnaHash,
+    pub dna_hash: DnaHashB64,
 }
 
 impl MembraneRole {
     pub fn new(role_name: String) -> ExternResult<Self> {
-        let dna_hash = WrappedDnaHash(zome_info()?.dna_hash);
+        let dna_hash = DnaHashB64::from(zome_info()?.dna_hash);
         Ok(MembraneRole {
             dna_hash,
             role_name,
@@ -19,13 +19,13 @@ impl MembraneRole {
     }
 }
 
-#[derive(Serialize, SerializedBytes, Deserialize, Clone)]
+#[derive(Serialize, Debug, Deserialize, Clone)]
 pub struct MembraneRoleOutput {
     pub entry_hash: EntryHash,
     pub entry: MembraneRole,
 }
 
-#[derive(Serialize, SerializedBytes, Deserialize, Clone)]
+#[derive(Serialize, Debug, Deserialize, Clone)]
 pub struct CreateMembraneRoleInput {
     pub role_name: String,
 }
@@ -54,12 +54,12 @@ pub fn create_membrane_role(input: CreateMembraneRoleInput) -> ExternResult<Memb
     Ok(output)
 }
 
-#[derive(Serialize, SerializedBytes, Deserialize, Clone)]
+#[derive(Serialize, Debug, Deserialize, Clone)]
 pub struct GetRolesOutput(pub Vec<MembraneRoleOutput>);
 #[hdk_extern]
 pub fn get_all_membrane_roles(_: ()) -> ExternResult<GetRolesOutput> {
     let all_roles_path = all_roles_path();
-    let dna_hash = WrappedDnaHash(zome_info()?.dna_hash);
+    let dna_hash = DnaHashB64::from(zome_info()?.dna_hash);
 
     let links = get_links(all_roles_path.hash()?, None)?;
 

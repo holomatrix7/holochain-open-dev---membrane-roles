@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@holochain-open-dev/common": "git+https://github.com/holochain-open-dev/common.git#ui-build",
-    "@holochain/tryorama": "0.4.0-dev.1",
+    "@holochain/tryorama": "0.4.3",
     "@types/lodash": "^4.14.158",
     "@types/node": "^14.0.14",
     "lodash": "^4.17.19",

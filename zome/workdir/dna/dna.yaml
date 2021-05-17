@@ -1,0 +1,13 @@
+---
+manifest_version: "1"
+name: roles
+uuid: 00000000-0000-0000-0000-000000000000
+properties: 
+  progenitors: ~
+zomes: 
+  - name: profiles
+    bundled: ../../target/wasm32-unknown-unknown/release/profiles.wasm
+  - name: membrane_roles
+    bundled: ../../target/wasm32-unknown-unknown/release/membrane_roles.wasm    
+
+

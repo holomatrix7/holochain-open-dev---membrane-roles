@@ -1,6 +1,6 @@
 use admin::{admin_role, ADMIN_ROLE_NAME};
-use hc_utils::{WrappedAgentPubKey};
-use hdk3::prelude::*;
+use holo_hash::{AgentPubKeyB64};
+use hdk::prelude::*;
 use membrane_roles::{create_membrane_role, CreateMembraneRoleInput};
 use progenitor::{am_i_progenitor};
 
@@ -10,8 +10,8 @@ mod membrane_roles;
 mod progenitor;
 mod utils;
 
-pub fn error<T>(reason: &str) -> ExternResult<T> {
-    Err(HdkError::Wasm(WasmError::Zome(String::from(reason))))
+pub fn err(reason: &str) -> WasmError {
+    WasmError::Guest(String::from(reason))
 }
 
 entry_defs![
@@ -21,10 +21,10 @@ entry_defs![
 ];
 
 #[hdk_extern]
-pub fn who_am_i(_: ()) -> ExternResult<WrappedAgentPubKey> {
+pub fn who_am_i(_: ()) -> ExternResult<AgentPubKeyB64> {
     let agent_info = agent_info()?;
 
-    Ok(WrappedAgentPubKey(agent_info.agent_initial_pubkey))
+    Ok(AgentPubKeyB64::from(agent_info.agent_initial_pubkey))
 }
 
 #[hdk_extern]

@@ -12,7 +12,7 @@ const conductorConfig = Config.gen();
 // Construct proper paths for your DNAs
 const rolesDna = path.join(__dirname, "../../membrane_roles.dna.gz");
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(() => resolve(), ms));
+const sleep = (ms) => new Promise((resolve) => setTimeout(() => resolve(null), ms));
 
 const orchestrator = new Orchestrator();
 

@@ -4,22 +4,22 @@ use crate::{
     progenitor::get_progenitors,
     utils,
 };
-use hc_utils::{WrappedAgentPubKey, WrappedDnaHash};
-use hdk3::prelude::*;
+use holo_hash::{AgentPubKeyB64, DnaHashB64};
+use hdk::prelude::*;
 
 #[hdk_entry(id = "membrane_role_assigment")]
 pub struct MembraneRoleAssignment {
     pub role_name: String,
-    pub dna_hash: WrappedDnaHash,
+    pub dna_hash: DnaHashB64,
     pub agent_pub_key: AgentPubKey,
 }
 
 /** Roles **/
 
-#[derive(Serialize, SerializedBytes, Deserialize, Clone)]
+#[derive(Serialize, Debug, Deserialize, Clone)]
 pub struct AssignRoleInput {
     role_name: String,
-    agent_pub_key: WrappedAgentPubKey,
+    agent_pub_key: AgentPubKeyB64,
 }
 #[hdk_extern]
 pub fn assign_membrane_role(input: AssignRoleInput) -> ExternResult<()> {
@@ -29,8 +29,8 @@ pub fn assign_membrane_role(input: AssignRoleInput) -> ExternResult<()> {
 
     let role_assignment = MembraneRoleAssignment {
         role_name: input.role_name,
-        dna_hash: WrappedDnaHash(zome_info()?.dna_hash),
-        agent_pub_key: input.agent_pub_key.0.clone(),
+        dna_hash: DnaHashB64::from(zome_info()?.dna_hash),
+        agent_pub_key: AgentPubKey::from(input.agent_pub_key.clone()),
     };
 
     create_entry(&role_assignment)?;
@@ -43,7 +43,7 @@ pub fn assign_membrane_role(input: AssignRoleInput) -> ExternResult<()> {
         utils::link_tag("assignee")?,
     )?;
     create_link(
-        utils::pub_key_to_entry_hash(input.agent_pub_key.0),
+        utils::pub_key_to_entry_hash(input.agent_pub_key.into()),
         assignment_hash,
         utils::link_tag("has_role")?,
     )?;
@@ -51,12 +51,10 @@ pub fn assign_membrane_role(input: AssignRoleInput) -> ExternResult<()> {
     Ok(())
 }
 
-#[derive(Serialize, SerializedBytes, Deserialize, Clone)]
-pub struct GetAssigneesOutput(Vec<WrappedAgentPubKey>);
 #[hdk_extern]
 pub fn get_membrane_role_assignees(
     membrane_role_hash: EntryHash,
-) -> ExternResult<GetAssigneesOutput> {
+) -> ExternResult<Vec<AgentPubKeyB64>> {
     let links = get_links(
         membrane_role_hash.clone(),
         Some(utils::link_tag("assignee")?),
@@ -69,21 +67,21 @@ pub fn get_membrane_role_assignees(
             let assignment: MembraneRoleAssignment =
                 utils::try_get_and_convert(link.target.clone())?;
 
-            Ok(WrappedAgentPubKey(assignment.agent_pub_key))
+            Ok(AgentPubKeyB64::from(assignment.agent_pub_key))
         })
-        .collect::<ExternResult<Vec<WrappedAgentPubKey>>>()?;
+        .collect::<ExternResult<Vec<AgentPubKeyB64>>>()?;
 
     // Add progenitors if the queried role is the admin role
     if membrane_role_hash == admin_role_hash()? {
         assigned_agents.extend(get_progenitors()?);
     }
 
-    Ok(GetAssigneesOutput(assigned_agents))
+    Ok(assigned_agents)
 }
 
 #[hdk_extern]
-pub fn get_membrane_roles_for_agent(agent_pub_key: WrappedAgentPubKey) -> ExternResult<GetRolesOutput> {
-    let agent_address = utils::pub_key_to_entry_hash(agent_pub_key.0);
+pub fn get_membrane_roles_for_agent(agent_pub_key: AgentPubKeyB64) -> ExternResult<GetRolesOutput> {
+    let agent_address = utils::pub_key_to_entry_hash(agent_pub_key.into());
 
     let links = get_links(agent_address, Some(utils::link_tag("has_role")?))?;
 
